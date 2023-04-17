@@ -50,25 +50,21 @@ typedef enum
 
 enum
 {
-    APP_INPUT_RTD_BTN1   = 0U,
-    APP_INPUT_RTD_BTN2   = 1U,
-    APP_INPUT_PTA19      = 2U,
-    APP_INPUT_IT6161_INT = 2U,
-    APP_INPUT_PTB5       = 3U,
-    APP_INPUT_TOUCH_INT  = 3U,
-    APP_OUTPUT_PTA5      = 4U,
-    APP_OUTPUT_PTA6      = 5U,
-    APP_IO_NUM           = 6U
+    APP_INPUT_PTA19      = 0U,
+    APP_INPUT_TOUCH_INT  = 0U,
+    APP_OUTPUT_PTA5      = 1U,
+    APP_OUTPUT_PTA6      = 2U,
+    APP_IO_NUM           = 3U
 };
 
 /* Define macros for input gpios that setup by linux that running on A Core(CA35) */
 #define APP_INPUT_GPIO_CONTROL_BY_ACORE_START APP_INPUT_PTA19
-#define APP_INPUT_GPIO_CONTROL_BY_ACORE_END   APP_INPUT_PTB5
+#define APP_INPUT_GPIO_CONTROL_BY_ACORE_END   APP_INPUT_PTA19
 
-#define APP_INPUT_GPIO_START APP_INPUT_RTD_BTN1
-#define APP_INPUT_GPIO_END   APP_INPUT_PTB5
+#define APP_INPUT_GPIO_START APP_INPUT_PTA19
+#define APP_INPUT_GPIO_END   APP_INPUT_PTA19
 
-#define APP_GPIO_START APP_INPUT_RTD_BTN1
+#define APP_GPIO_START APP_INPUT_PTA19
 
 /* Task priority definition, bigger number stands for higher priority */
 #define APP_SRTM_MONITOR_TASK_PRIO    (4U)
@@ -147,15 +143,11 @@ enum
 #define APP_GPIO_IDX(ioId) ((uint8_t)(((uint16_t)ioId) >> 8U))
 #define APP_PIN_IDX(ioId)  ((uint8_t)ioId)
 #define APP_GPIO_INT_SEL   (kRGPIO_InterruptOutput2)
-#define APP_PIN_PTA19      (0x0013U) /* PTA19 use for it6161(mipi to hdmi converter ic) interrupt */
-#define APP_PIN_IT6161_INT (APP_PIN_PTA19)
+#define APP_PIN_PTA19      (0x0013U) /* PTA19 use for touch interrupt */
+#define APP_PIN_TOUCH_INT  (APP_PIN_PTA19)
 #define APP_PIN_PTA5       (0x0005U) /* PTA5, use for touch reset IO */
 #define APP_PIN_PTA6       (0x0006U) /* PTA6, use for MIPI-DSI enable IO */
-#define APP_PIN_PTB5       (0x0105U) /* PTB5, use for touch interrupt */
-#define APP_PIN_TOUCH_INT  (APP_PIN_PTB5)
 #define APP_PIN_PTB4       (0x0104U) /* PTB4 */
-#define APP_PIN_RTD_BTN1   (0x010DU) /* PTB13 */
-#define APP_PIN_RTD_BTN2   (0x010CU) /* PTB12 */
 
 #define APP_LSM6DSO_INT1_B_PIN (APP_PIN_PTB4) /* Interrupt pin connected to LSM6DSO(sensor) */
 
