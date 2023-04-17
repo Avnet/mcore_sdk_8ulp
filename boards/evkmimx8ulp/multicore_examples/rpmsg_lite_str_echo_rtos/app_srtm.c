@@ -257,7 +257,7 @@ static TimerHandle_t
 static app_irq_handler_t irqHandler;
 static void *irqHandlerParam;
 
-static HAL_PWM_HANDLE_DEFINE(pwmHandle0);
+static HAL_PWM_HANDLE_DEFINE(pwmHandle3);
 
 static HAL_RTC_HANDLE_DEFINE(rtcHandle);
 
@@ -269,7 +269,7 @@ lpm_ad_power_mode_e AD_WillEnterMode = AD_UNKOWN;
 
 /* pwmHandles must strictly follow TPM instances. If you don't provide service for some TPM instance,
  * set the corresponding handle to NULL. */
-static hal_pwm_handle_t pwmHandles[2] = {(hal_pwm_handle_t)pwmHandle0, NULL};
+static hal_pwm_handle_t pwmHandles[5] = {NULL, NULL, NULL, (hal_pwm_handle_t)pwmHandle3, NULL};
 
 static struct _i2c_bus platform_i2c_buses[] = {
     {.bus_id         = 0,
@@ -1740,7 +1740,7 @@ static void APP_SRTM_InitAudioService(void)
 
 static void APP_SRTM_InitPwmDevice(void)
 {
-    HAL_PwmInit(pwmHandles[0], 0U, CLOCK_GetTpmClkFreq(0U));
+    HAL_PwmInit(pwmHandles[3], 3U, CLOCK_GetTpmClkFreq(3U));
 }
 
 static void APP_SRTM_InitPwmService(void)

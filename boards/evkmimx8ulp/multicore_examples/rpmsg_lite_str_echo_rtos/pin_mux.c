@@ -186,8 +186,9 @@ BOARD_InitTpmPins:
  *
  * END ****************************************************************************************************************/
 void BOARD_InitTpmPins(void) {                             /*!< Function assigned for the core: Cortex-M33[cm33] */
-    IOMUXC_SetPinMux(IOMUXC_PTA3_TPM0_CH2, 0U);
-    IOMUXC_SetPinConfig(IOMUXC_PTA3_TPM0_CH2,
+    /* Backlight PWM PinMux */
+    IOMUXC_SetPinMux(IOMUXC_PTB13_TPM3_CH5, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTB13_TPM3_CH5,
                         IOMUXC_PCR_DSE_MASK);
 }
 
