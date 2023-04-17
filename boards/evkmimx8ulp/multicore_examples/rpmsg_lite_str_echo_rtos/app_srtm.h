@@ -147,9 +147,7 @@ enum
 #define APP_PIN_TOUCH_INT  (APP_PIN_PTA19)
 #define APP_PIN_PTA5       (0x0005U) /* PTA5, use for touch reset IO */
 #define APP_PIN_PTA6       (0x0006U) /* PTA6, use for MIPI-DSI enable IO */
-#define APP_PIN_PTB4       (0x0104U) /* PTB4 */
 
-#define APP_LSM6DSO_INT1_B_PIN (APP_PIN_PTB4) /* Interrupt pin connected to LSM6DSO(sensor) */
 
 extern int32_t RPMsg_MU0_A_IRQHandler(void);
 
