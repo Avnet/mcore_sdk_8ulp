@@ -78,8 +78,8 @@ void BOARD_InitLpuartPins(void) {                          /*!< Function assigne
 BOARD_InitI2cPins:
 - options: {callFromInitBoot: 'true', coreID: cm33}
 - pin_list:
-  - {pin_num: AF4, peripheral: LPI2C0, signal: lpi2c_scl, pin_signal: PTA8, ODE: OPEN_DRAIN}
-  - {pin_num: AG2, peripheral: LPI2C0, signal: lpi2c_sda, pin_signal: PTA9, ODE: OPEN_DRAIN}
+  - {pin_num: AF4, peripheral: LPI2C0, signal: lpi2c_scl, pin_signal: PTA16, ODE: OPEN_DRAIN}
+  - {pin_num: AG2, peripheral: LPI2C0, signal: lpi2c_sda, pin_signal: PTA17, ODE: OPEN_DRAIN}
   - {pin_num: AE6, peripheral: LPI2C1, signal: lpi2c_scl, pin_signal: PTA12, ODE: OPEN_DRAIN}
   - {pin_num: AJ2, peripheral: LPI2C1, signal: lpi2c_sda, pin_signal: PTA13, ODE: OPEN_DRAIN}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
@@ -98,11 +98,11 @@ void BOARD_InitI2cPins(void) {                             /*!< Function assigne
     IOMUXC_SetPinMux(IOMUXC_PTA13_LPI2C1_SDA, 0U);
     IOMUXC_SetPinConfig(IOMUXC_PTA13_LPI2C1_SDA,
                         IOMUXC_PCR_ODE_MASK);
-    IOMUXC_SetPinMux(IOMUXC_PTA8_LPI2C0_SCL, 0U);
-    IOMUXC_SetPinConfig(IOMUXC_PTA8_LPI2C0_SCL,
+    IOMUXC_SetPinMux(IOMUXC_PTA16_LPI2C0_SCL, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTA16_LPI2C0_SCL,
                         IOMUXC_PCR_ODE_MASK);
-    IOMUXC_SetPinMux(IOMUXC_PTA9_LPI2C0_SDA, 0U);
-    IOMUXC_SetPinConfig(IOMUXC_PTA9_LPI2C0_SDA,
+    IOMUXC_SetPinMux(IOMUXC_PTA17_LPI2C0_SDA, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTA17_LPI2C0_SDA,
                         IOMUXC_PCR_ODE_MASK);
 }
 
