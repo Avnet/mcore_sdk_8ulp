@@ -58,7 +58,8 @@ enum
     APP_INPUT_TOUCH_INT  = 3U,
     APP_OUTPUT_PTA5      = 4U,
     APP_OUTPUT_PTA6      = 5U,
-    APP_IO_NUM           = 6U
+    APP_OUTPUT_PTC23     = 6U,
+    APP_IO_NUM           = 7U
 };
 
 /* Define macros for input gpios that setup by linux that running on A Core(CA35) */
@@ -153,6 +154,7 @@ enum
 #define APP_PIN_IT6161_INT (APP_PIN_PTA19)
 #define APP_PIN_PTA5       (0x0005U) /* PTA5, use for touch reset IO */
 #define APP_PIN_PTA6       (0x0006U) /* PTA6, use for MIPI-DSI enable IO */
+#define APP_PIN_PTC23      (0x0217U) /* PTC23, use for camera power enable IO */
 #define APP_PIN_PTB5       (0x0105U) /* PTB5, use for touch interrupt */
 #define APP_PIN_TOUCH_INT  (APP_PIN_PTB5)
 #define APP_PIN_PTB4       (0x0104U) /* PTB4 */

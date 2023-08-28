@@ -182,6 +182,8 @@ static const uint16_t wuuPins[] = {
     0x010DU, /* WUU_P25 PTB13 */
     0x010EU, /* WUU_P26 PTB14 */
     0x010FU, /* WUU_P27 PTB15 */
+
+    0x0217U, /* WUU_P28 PTC23 */
 };
 
 static const srtm_io_event_t rtdBtn1KeyEvents[] = {
@@ -904,7 +906,7 @@ void BBNSM_IRQHandler(void)
     }
 }
 
-static uint16_t ioIdTable[APP_IO_NUM] = {APP_PIN_RTD_BTN1, APP_PIN_RTD_BTN2, APP_PIN_PTA19, APP_PIN_PTB5, APP_PIN_PTA5, APP_PIN_PTA6};
+static uint16_t ioIdTable[APP_IO_NUM] = {APP_PIN_RTD_BTN1, APP_PIN_RTD_BTN2, APP_PIN_PTA19, APP_PIN_PTB5, APP_PIN_PTA5, APP_PIN_PTA6, APP_PIN_PTC23};
 
 #define PIN_FUNC_ID_SIZE (5)
 static uint32_t pinFuncId[APP_IO_NUM][PIN_FUNC_ID_SIZE] = {
@@ -914,6 +916,7 @@ static uint32_t pinFuncId[APP_IO_NUM][PIN_FUNC_ID_SIZE] = {
     {IOMUXC_PTB5_PTB5},
     {IOMUXC_PTA5_PTA5},
     {IOMUXC_PTA6_PTA6},
+    {IOMUXC_PTC23_PTC23},
 };
 
 static uint32_t inputMask[APP_IO_NUM] = {
@@ -923,11 +926,13 @@ static uint32_t inputMask[APP_IO_NUM] = {
     IOMUXC_PCR_PE_MASK | IOMUXC_PCR_PS_MASK,
     IOMUXC_PCR_PE_MASK | IOMUXC_PCR_PS_MASK,
     IOMUXC_PCR_PE_MASK | IOMUXC_PCR_PS_MASK,
+    IOMUXC_PCR_PE_MASK | IOMUXC_PCR_PS_MASK,
 };
 
 static uint32_t outputMask[APP_IO_NUM] = {
     IOMUXC_PCR_IBE_MASK,
     IOMUXC_PCR_IBE_MASK,
+    IOMUXC_PCR_OBE_MASK,
     IOMUXC_PCR_OBE_MASK,
     IOMUXC_PCR_OBE_MASK,
     IOMUXC_PCR_OBE_MASK,
@@ -966,7 +971,7 @@ static srtm_status_t APP_IO_ConfOutput(uint16_t ioId, srtm_io_value_t ioValue)
     uint8_t gpioIdx = APP_GPIO_IDX(ioId);
     uint8_t pinIdx  = APP_PIN_IDX(ioId);
 
-    assert(gpioIdx < 2U); /* We only support GPIOA and GPIOB */
+    assert(gpioIdx < 3U); /* We can support GPIOA, GPIOB, GPIOC */
     assert(pinIdx < 32U);
 
     APP_IO_SetPinConfig(ioId, false);
@@ -997,7 +1002,7 @@ static srtm_status_t APP_IO_GetInput(srtm_service_t service,
     uint8_t gpioIdx = APP_GPIO_IDX(ioId);
     uint8_t pinIdx  = APP_PIN_IDX(ioId);
 
-    assert(gpioIdx < 2U); /* We only support GPIOA and GPIOB */
+    assert(gpioIdx < 3U); /* We can support GPIOA, GPIOB, GPIOC */
     assert(pinIdx < 32U);
     assert(pIoValue);
 
@@ -1014,7 +1019,7 @@ static srtm_status_t APP_IO_ConfInput(uint8_t inputIdx, srtm_io_event_t event, b
     uint8_t wuuIdx  = APP_IO_GetWUUPin(ioId);
     wuu_external_wakeup_pin_config_t config;
 
-    assert(gpioIdx < 2U); /* Only support GPIOA, GPIOB */
+    assert(gpioIdx < 3U); /* We can support GPIOA, GPIOB, GPIOC */
     assert(pinIdx < 32U);
     assert(wuuIdx <= ARRAY_SIZE(wuuPins)); /* When wuuIdx == ARRAY_SIZE(wuuPins),
                                               it means there's no WUU pin for ioId. */
@@ -1915,6 +1920,7 @@ static void APP_SRTM_InitIoKeyService(void)
     suspendContext.io.data[APP_INPUT_PTB5].ioId     = APP_PIN_PTB5;
     suspendContext.io.data[APP_OUTPUT_PTA5].ioId    = APP_PIN_PTA5;
     suspendContext.io.data[APP_OUTPUT_PTA6].ioId    = APP_PIN_PTA6;
+    suspendContext.io.data[APP_OUTPUT_PTC23].ioId   = APP_PIN_PTC23;
 
     APP_SRTM_InitIoKeyDevice();
 
@@ -1936,6 +1942,7 @@ static void APP_SRTM_InitIoKeyService(void)
     SRTM_IoService_RegisterPin(ioService, APP_PIN_PTB5, APP_IO_SetOutput, APP_IO_GetInput, APP_IO_ConfIEvent, NULL);
     SRTM_IoService_RegisterPin(ioService, APP_PIN_PTA5, APP_IO_SetOutput, APP_IO_GetInput, APP_IO_ConfIEvent, NULL);
     SRTM_IoService_RegisterPin(ioService, APP_PIN_PTA6, APP_IO_SetOutput, APP_IO_GetInput, APP_IO_ConfIEvent, NULL);
+    SRTM_IoService_RegisterPin(ioService, APP_PIN_PTC23, APP_IO_SetOutput, APP_IO_GetInput, APP_IO_ConfIEvent, NULL);
     SRTM_Dispatcher_RegisterService(disp, ioService);
 
     keypadService = SRTM_KeypadService_Create();
