@@ -38,9 +38,7 @@ void BOARD_InitBootPins(void)
     BOARD_InitPmicI2cPins();
     BOARD_InitI2sPins();
     BOARD_InitTpmPins();
-    BOARD_InitHdmiIntPins();
     BOARD_InitTouchIntPins();
-    BOARD_InitButtonPins();
     BOARD_InitPmicModePins();
     BOARD_InitLsm6dsoPins();
 }
@@ -208,10 +206,12 @@ BOARD_InitHdmiIntPins:
  *
  * END ****************************************************************************************************************/
 void BOARD_InitHdmiIntPins(void) {                         /*!< Function assigned for the core: Cortex-M33[cm33] */
+#if 0
     IOMUXC_SetPinMux(IOMUXC_PTA19_PTA19, 0U);
     IOMUXC_SetPinConfig(IOMUXC_PTA19_PTA19,
                         IOMUXC_PCR_PE_MASK |
                         IOMUXC_PCR_PS_MASK);
+#endif
 }
 
 
@@ -239,6 +239,12 @@ void BOARD_InitTouchIntPins(void) {                        /*!< Function assigne
     /* Touchscreen reset IO */
     IOMUXC_SetPinMux(IOMUXC_PTA5_PTA5, 0U);
     IOMUXC_SetPinConfig(IOMUXC_PTA5_PTA5,
+                        IOMUXC_PCR_PE_MASK |
+                        IOMUXC_PCR_PS_MASK);
+
+    /* Touchscreen interrupt IO */
+    IOMUXC_SetPinMux(IOMUXC_PTA19_PTA19, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTA19_PTA19,
                         IOMUXC_PCR_PE_MASK |
                         IOMUXC_PCR_PS_MASK);
 
@@ -273,12 +279,14 @@ BOARD_InitButtonPins:
  *
  * END ****************************************************************************************************************/
 void BOARD_InitButtonPins(void) {                          /*!< Function assigned for the core: Cortex-M33[cm33] */
+#if 0
     IOMUXC_SetPinMux(IOMUXC_PTB12_PTB12, 0U);
     IOMUXC_SetPinConfig(IOMUXC_PTB12_PTB12,
                         IOMUXC_PCR_IBE_MASK);
     IOMUXC_SetPinMux(IOMUXC_PTB13_PTB13, 0U);
     IOMUXC_SetPinConfig(IOMUXC_PTB13_PTB13,
                         IOMUXC_PCR_IBE_MASK);
+#endif
 }
 
 
