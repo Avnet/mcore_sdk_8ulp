@@ -1079,6 +1079,77 @@ bool BOARD_HandshakeWithUboot(void)
     return state;
 }
 
+/* It must handshake with uboot when initial TPM3 in main(), but the FreeRTOS is not running at that time.
+ * So copy BOARD_HandshakeWithUboot() and remove RTOS SDK to BOARD_HandshakeWithUboot_InAdvance().
+ */
+bool BOARD_HandshakeWithUboot_InAdvance(void)
+{
+    uint64_t timeout_time = BOARD_HANDSHAKE_WITH_UBOOT_TIMEOUT_MS * 1000; /* us */
+    uint64_t curr_time    = 0U;
+    bool state = false;
+
+    /*
+     * Wait MU0_MUA FSR F0 flag is set by uboot
+     *
+     * handshake procedure as follows:
+     * a35(set flag F0 of MU0_MUB) --- ready to do MU communication(also indicates MIPI DSI panel ready) ---> m33
+     * a35 <--------------- ACK ----------------------------------------------------------------------------> m33 (get
+     * flag F0 of MU0_MUA,  and set flag F0 of MU0_MUA) a35(clear flag F0 of MU0_MUB)
+     * -----------------------------------------------------------------------> m33 a35
+     * <------------------------------------------------------------------------------------------------> m33 (get flag
+     * F0 of MU0_MUA and clear flag F0 of MU0_MUA)
+     *
+     * (uboot will set MU0_MUB FCR F0 flag in board_init(), board/freescale/imx8ulp_evk/imx8ulp_evk.c,
+     * after uboot set MU0_MUB FCR F0 flag, the flag will be shown in MU0_MUA FSR)
+     */
+    /* enable clock of MU0_MUA before accessing registers of MU0_MUA */
+    MU_Init(MU0_MUA);
+    while (true)
+    {
+        if (MU_GetFlags(MU0_MUA) & BOARD_MU0_MUB_F0_INIT_SRTM_COMMUNICATION_FLG)
+        {
+            /* Set FCR F0 flag of MU0_MUA to notify uboot to clear FCR F0 flag of MU0_MUB */
+            MU_SetFlags(MU0_MUA, BOARD_MU0_MUB_F0_INIT_SRTM_COMMUNICATION_FLG);
+            BOARD_SetTrdcGlobalConfig();
+            break;
+        }
+
+        SDK_DelayAtLeastUs(BOARD_WAIT_MU0_MUB_F0_FLG_FROM_UBOOT_MS * 1000, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
+        curr_time += BOARD_WAIT_MU0_MUB_F0_FLG_FROM_UBOOT_MS * 1000;
+        if (curr_time > timeout_time) /* when time out */
+        {
+            PRINTF("\r\n %s: %d handshake with uboot timeout\r\n", __func__, __LINE__);
+            return state;
+        }
+    }
+
+    /*
+     * Wait uboot to clear the FCR F0 flag of MU0_MUB
+     * Clear FCR F0 flag of MU0_MUA after uboot have cleared the FCR
+     * F0 flag of MU0_MUB
+     */
+
+    curr_time = 0UL;
+    while (true)
+    {
+        if ((MU_GetFlags(MU0_MUA) & BOARD_MU0_MUB_F0_INIT_SRTM_COMMUNICATION_FLG) == 0)
+        {
+            MU_SetFlags(MU0_MUA, 0);
+            state = true;
+            break;
+        }
+        SDK_DelayAtLeastUs(BOARD_WAIT_MU0_MUB_F0_FLG_FROM_UBOOT_MS * 1000, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
+        curr_time += BOARD_WAIT_MU0_MUB_F0_FLG_FROM_UBOOT_MS * 1000;
+        if (curr_time > timeout_time) /* when time out */
+        {
+            PRINTF("\r\n %s: %d handshake with uboot timeout\r\n", __func__, __LINE__);
+            MU_SetFlags(MU0_MUA, 0); /* clear flag */
+            break;
+        }
+    }
+    return state;
+}
+
 void BOARD_ConfigMPU(void)
 {
     uint8_t attr;
@@ -1668,20 +1739,20 @@ void BOARD_InitMipiDsiPins(void)
 #endif /* BOARD_USE_PCA6416A. */
 
 #if defined(BOARD_USE_TPM) && BOARD_USE_TPM
-/* Set TPM0_CH2 to full duty cycle to enable backlight at highest brightness for uboot(running on a35) */
+/* Set TPM3_CH5 to full duty cycle to enable backlight at highest brightness for uboot(running on a35) */
 void BOARD_EnableMipiDsiBacklight(void)
 {
     tpm_config_t tpmInfo;
     tpm_chnl_pwm_signal_param_t pwmChannelConfig = {
-        .chnlNumber       = (tpm_chnl_t)TPM0_CH2,
+        .chnlNumber       = (tpm_chnl_t)TPM3_CH5,
         .level            = kTPM_HighTrue,
         .dutyCyclePercent = FULL_DUTY_CYCLE,
     };
 
     TPM_GetDefaultConfig(&tpmInfo);
-    TPM_Init(TPM0, (void *)&tpmInfo);
-    TPM_SetupPwm(TPM0, (void *)&pwmChannelConfig, 1, kTPM_EdgeAlignedPwm, CLOCK_GetTpmClkFreq(0U), TPM0_CH2_PWM_FREQ);
-    TPM_StartTimer(TPM0, kTPM_SystemClock);
+    TPM_Init(TPM3, (void *)&tpmInfo);
+    TPM_SetupPwm(TPM3, (void *)&pwmChannelConfig, 1, kTPM_EdgeAlignedPwm, CLOCK_GetTpmClkFreq(3U), TPM3_CH5_PWM_FREQ);
+    TPM_StartTimer(TPM3, kTPM_SystemClock);
 }
 #endif /* BOARD_USE_TPM. */
 #endif /* SDK_I2C_BASED_COMPONENT_USED */

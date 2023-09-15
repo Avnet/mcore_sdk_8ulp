@@ -115,9 +115,9 @@
 #define BOARD_PCA6416A_CHG_OK          (8U + 4U)
 #define BOARD_PCA6416A_AC_OK           (8U + 5U)
 
-#define TPM0_CH2 (2UL)
+#define TPM3_CH5 (5UL)
 /* 500 Hz */
-#define TPM0_CH2_PWM_FREQ (500UL)
+#define TPM3_CH5_PWM_FREQ (500UL)
 #define FULL_DUTY_CYCLE   (100UL)
 
 /* IT6161(U10) */
@@ -277,6 +277,7 @@ void BOARD_SetTrdcAfterApdReset(void);
  * true: succeeded to handshake with uboot; false: failed to handshake with uboot
  */
 bool BOARD_HandshakeWithUboot(void);
+bool BOARD_HandshakeWithUboot_InAdvance(void);
 
 void BOARD_ConfigMPU(void);
 status_t BOARD_InitPsRam(void);

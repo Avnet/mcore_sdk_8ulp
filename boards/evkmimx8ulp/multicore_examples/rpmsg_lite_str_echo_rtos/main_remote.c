@@ -19,6 +19,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "version.h"
+#include "fsl_fusion.h"
 
 #include "fsl_reset.h"
 #include "app_srtm.h"
@@ -191,6 +192,12 @@ int main(void)
     BOARD_InitDebugConsole();
 
     UPOWER_PowerOnMemPart(0U, (uint32_t)kUPOWER_MP1_DMA0);
+
+    Fusion_Init();
+    /* Must handshake with uboot, unless will get issues(such as: SoC reset all the time) */
+    BOARD_HandshakeWithUboot_InAdvance();
+    CLOCK_SetIpSrc(kCLOCK_Tpm3, kCLOCK_Pcc2BusIpSrcFusionDspBus);
+    RESET_PeripheralReset(kRESET_Tpm3);
 
     CLOCK_SetIpSrcDiv(kCLOCK_Tpm0, kCLOCK_Pcc1BusIpSrcCm33Bus, 1U, 0U);
     CLOCK_SetIpSrcDiv(kCLOCK_Lpi2c0, kCLOCK_Pcc1BusIpSrcCm33Bus, 0U, 0U);
