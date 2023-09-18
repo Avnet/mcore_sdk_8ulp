@@ -171,6 +171,134 @@ void app_task(void *param)
     }
 }
 
+typedef struct gpio_pin_s
+{
+    char        *desc;
+    RGPIO_Type  *base;
+    uint32_t     pin;
+} gpio_pin_t;
+
+int gpio_pinloop_test(gpio_pin_t *gpio1, gpio_pin_t *gpio2)
+{
+    rgpio_pin_config_t out_config = { kRGPIO_DigitalOutput, 0 };
+    rgpio_pin_config_t in_config =  { kRGPIO_DigitalInput,  0 };
+
+    /*+-------------------+
+     *|  gpio1 <-- gpio2  |
+     *+-------------------+*/
+    RGPIO_PinInit(gpio1->base, gpio1->pin, &in_config);
+    RGPIO_PinInit(gpio2->base, gpio2->pin, &out_config);
+
+    RGPIO_WritePinOutput(gpio2->base, gpio2->pin, 1);
+    vTaskDelay( pdMS_TO_TICKS(2) );
+    if( RGPIO_PinRead(gpio1->base, gpio1->pin) != 1 )
+    {
+        PRINTF("%4s <-- %4s test[1] fail\r\n", gpio1->desc, gpio2->desc);
+        return 1;
+    }
+
+    RGPIO_WritePinOutput(gpio2->base, gpio2->pin, 0);
+    vTaskDelay( pdMS_TO_TICKS(2) );
+    if( RGPIO_PinRead(gpio1->base, gpio1->pin) != 0 )
+    {
+        PRINTF("%4s <-- %4s test[0] fail\r\n", gpio1->desc, gpio2->desc);
+        return 2;
+    }
+
+    return 0;
+}
+
+int mikrobus_test(void)
+{
+    int                i, rv = 0;
+
+    /* MISO and INT pins can only be set as input mode, so we use loop test */
+    gpio_pin_t   mikrobus_loopins[] =
+    {
+        {.desc="MISO", .base=GPIOB, .pin=4U  }, /* 05#, input  */
+        {.desc="MOSI", .base=GPIOB, .pin=3U  }, /* 06#, output */
+        {.desc="INT",  .base=GPIOB, .pin=12U }, /* 15#, input  */
+        {.desc="PWM",  .base=GPIOA, .pin=8U  }, /* 16#, output */
+        {.desc="RXD",  .base=GPIOA, .pin=15U }, /* 14#, input */
+        {.desc="TXD",  .base=GPIOA, .pin=18U }, /* 13#, output */
+    };
+
+    PRINTF("\r\n");
+    PRINTF("+----------------------------------+\r\n");
+    PRINTF("|       MikroBUS Test Case         |\r\n");
+    PRINTF("+----------------------------------+\r\n");
+    PRINTF("\r\n");
+
+    /*+-----------------+
+     *|  Loop pins test |
+     *+-----------------+*/
+    for(i=0; i<ARRAY_SIZE(mikrobus_loopins); i+=2 )
+    {
+        rv |= gpio_pinloop_test(&mikrobus_loopins[i], &mikrobus_loopins[i+1]);
+    }
+    PRINTF("MikroBUS loop pins test                              %s\r\n", rv ? "\e[31m[**FAIL**]\e[0m" : "\e[32m[  OKAY  ]\e[0m");
+
+    return rv;
+}
+
+int show_mikrobus_led(int status)
+{
+    int                i, idx;
+    rgpio_pin_config_t out_config = { kRGPIO_DigitalOutput, 0 };
+
+    /* Below pins can only be set as output mode, so we use LED test */
+    gpio_pin_t   mikrobus_ledpins[] = /* GPIO led test pins */
+    {
+        {.desc="AN",   .base=GPIOB, .pin=2U  }, /* 01#, test status indicate led */
+        {.desc="RST",  .base=GPIOB, .pin=14U }, /* 02# */
+        {.desc="CS",   .base=GPIOB, .pin=6U  }, /* 03# */
+        {.desc="SCK",  .base=GPIOB, .pin=5U  }, /* 04# */
+        /*   #11(SDA), #12(SCL) -> DA7212    */
+    };
+
+    PRINTF("\r\n");
+    PRINTF("+----------------------------------+\r\n");
+    PRINTF("|       Show MikroBUS Leds         |\r\n");
+    PRINTF("+----------------------------------+\r\n");
+    PRINTF("\r\n");
+
+    PRINTF("MikroBUS led test                                    \e[32m[  WATCH ]\e[0m\r\n");
+
+    /* set all pins as GPIO output mode */
+    for(i=0; i<ARRAY_SIZE(mikrobus_ledpins); i++ )
+        RGPIO_PinInit(mikrobus_ledpins[i].base, mikrobus_ledpins[i].pin, &out_config);
+
+    if( kStatus_Success != status )
+    {
+        /* Get test case failed will turn the indicate led off constantly */
+        RGPIO_WritePinOutput(mikrobus_ledpins[0].base, mikrobus_ledpins[0].pin, 0);
+        idx = 1;
+    }
+    else
+    {
+        /* All test case pass will turn the indicate led blink */
+        idx = 0;
+    }
+
+    /*+-----------------+
+     *|  Led pins test  |
+     *+-----------------+*/
+
+    /* infinite loop here */
+    while(1)
+    {
+        for( i=idx; i<ARRAY_SIZE(mikrobus_ledpins); i++ )
+            RGPIO_WritePinOutput(mikrobus_ledpins[i].base, mikrobus_ledpins[i].pin, 1);
+
+        vTaskDelay( pdMS_TO_TICKS(1000) );
+
+        for( i=idx; i<ARRAY_SIZE(mikrobus_ledpins); i++ )
+            RGPIO_WritePinOutput(mikrobus_ledpins[i].base, mikrobus_ledpins[i].pin, 0);
+
+        vTaskDelay( pdMS_TO_TICKS(1000) );
+    }
+}
+
 void test_task(void *param)
 {
     uint8_t  status = 0;
@@ -186,6 +314,13 @@ void test_task(void *param)
     {
         status |= (1<<1);
     }
+
+    if( kStatus_Success != mikrobus_test() )
+    {
+        status |= (1<<2);
+    }
+
+    show_mikrobus_led(status);
 
     PRINTF("\r\n");
     PRINTF("All the test case                                    [  DONE  ]\r\n");

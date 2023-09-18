@@ -43,6 +43,7 @@ void BOARD_InitBootPins(void)
     BOARD_InitLsm6dsoPins();
     BOARD_InitPsRamPins();
     BOARD_InitSpiFlashPins();
+    BOARD_InitMikroBusPins();
 }
 
 /*
@@ -469,6 +470,30 @@ void BOARD_InitSpiFlashPins(void) {                                /*!< Function
     IOMUXC_SetPinMux(IOMUXC_PTC9_FLEXSPI0_A_DATA1, 0U);
     IOMUXC_SetPinConfig(IOMUXC_PTC9_FLEXSPI0_A_DATA1,
                         IOMUXC_PCR_DSE_MASK);
+}
+
+/* FUNCTION ************************************************************************************************************
+ *
+ * Function Name : BOARD_InitMikroBusPins
+ * Description   : Configures pin routing and optionally pin electrical features.
+ *
+ * END ****************************************************************************************************************/
+void BOARD_InitMikroBusPins(void) {                         /*!< Function assigned for the core: Cortex-M33[cm33] */
+    IOMUXC_SetPinMux(IOMUXC_PTB2_PTB2,   0U); /* #01 AN   */
+    IOMUXC_SetPinMux(IOMUXC_PTB14_PTB14, 0U); /* #02 RST  */
+    IOMUXC_SetPinMux(IOMUXC_PTB6_PTB6,   0U); /* #03 CS   */
+    IOMUXC_SetPinMux(IOMUXC_PTB5_PTB5,   0U); /* #04 SCK  */
+    IOMUXC_SetPinMux(IOMUXC_PTB4_PTB4,   0U); /* #05 MISO */
+    IOMUXC_SetPinMux(IOMUXC_PTB3_PTB3,   0U); /* #06 MOSI */
+
+    /*      #07: 3.3v   #08: GND        */
+    /*      #09: 5v     #10: GND        */
+    /*  #11(SDA), #12(SCL) -> DA7212    */
+
+    IOMUXC_SetPinMux(IOMUXC_PTA18_PTA18, 0U); /* #13 TXD   */
+    IOMUXC_SetPinMux(IOMUXC_PTA15_PTA15, 0U); /* #14 RXD   */
+    IOMUXC_SetPinMux(IOMUXC_PTB12_PTB12, 0U); /* #15 INT   */
+    IOMUXC_SetPinMux(IOMUXC_PTA8_PTA8,   0U); /* #16 PWM   */
 }
 
 /***********************************************************************************************************************
