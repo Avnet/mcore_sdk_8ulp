@@ -46,6 +46,8 @@ static char app_buf[512]; /* Each RPMSG buffer can carry less than 512 payload *
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
+extern int psram_test(void);
+extern int flash_test(void);
 
 /*******************************************************************************
  * Code
@@ -169,15 +171,41 @@ void app_task(void *param)
     }
 }
 
+void test_task(void *param)
+{
+    uint8_t  status = 0;
+
+    vTaskDelay( pdMS_TO_TICKS(6000) );
+
+    if( kStatus_Success != psram_test() )
+    {
+        status |= (1<<0);
+    }
+
+    if( kStatus_Success != flash_test() )
+    {
+        status |= (1<<1);
+    }
+
+    PRINTF("\r\n");
+    PRINTF("All the test case                                    [  DONE  ]\r\n");
+    PRINTF("\r\n");
+
+    vTaskDelete(NULL);
+}
+
 void app_create_task(void)
 {
     if (app_task_handle == NULL &&
-        xTaskCreate(app_task, "APP_TASK", APP_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, &app_task_handle) != pdPASS)
+        xTaskCreate(app_task, "APP_TASK", APP_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, &app_task_handle) != pdPASS)
     {
         PRINTF("\r\nFailed to create application task\r\n");
         for (;;)
             ;
     }
+#ifdef CONFIG_QCTEST
+    xTaskCreate(test_task, "TEST_TASK", APP_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
+#endif
 }
 
 /*!

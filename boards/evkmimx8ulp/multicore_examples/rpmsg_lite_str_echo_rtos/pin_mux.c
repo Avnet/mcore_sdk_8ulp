@@ -41,6 +41,8 @@ void BOARD_InitBootPins(void)
     BOARD_InitTouchIntPins();
     BOARD_InitPmicModePins();
     BOARD_InitLsm6dsoPins();
+    BOARD_InitPsRamPins();
+    BOARD_InitSpiFlashPins();
 }
 
 /*
@@ -343,6 +345,130 @@ void BOARD_InitLsm6dsoPins(void) {                         /*!< Function assigne
     IOMUXC_SetPinConfig(IOMUXC_PTB4_PTB4,
                         IOMUXC_PCR_PE_MASK |
                         IOMUXC_PCR_PS_MASK);
+}
+
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+BOARD_InitPsRamPins:
+- options: {callFromInitBoot: 'false', coreID: cm33}
+- pin_list:
+  - {pin_num: AH23, peripheral: FLEXSPI1, signal: flexspi_a_ss0_b, pin_signal: PTC17, DSE: HIDRIVE}
+  - {pin_num: AF22, peripheral: FLEXSPI1, signal: flexspi_a_sclk, pin_signal: PTC18, DSE: HIDRIVE}
+  - {pin_num: AF21, peripheral: FLEXSPI1, signal: flexspi_a_dqs, pin_signal: PTC12, PS: DOWN, PE: ENABLED, DSE: HIDRIVE}
+  - {pin_num: AH20, peripheral: FLEXSPI1, signal: 'flexspi_a_data, 7', pin_signal: PTC13, DSE: HIDRIVE}
+  - {pin_num: AE21, peripheral: FLEXSPI1, signal: 'flexspi_a_data, 6', pin_signal: PTC14, DSE: HIDRIVE}
+  - {pin_num: AJ22, peripheral: FLEXSPI1, signal: 'flexspi_a_data, 5', pin_signal: PTC15, DSE: HIDRIVE}
+  - {pin_num: AD21, peripheral: FLEXSPI1, signal: 'flexspi_a_data, 4', pin_signal: PTC16, DSE: HIDRIVE}
+  - {pin_num: AJ24, peripheral: FLEXSPI1, signal: 'flexspi_a_data, 3', pin_signal: PTC19, DSE: HIDRIVE}
+  - {pin_num: AE22, peripheral: FLEXSPI1, signal: 'flexspi_a_data, 2', pin_signal: PTC20, DSE: HIDRIVE}
+  - {pin_num: AH24, peripheral: FLEXSPI1, signal: 'flexspi_a_data, 1', pin_signal: PTC21, DSE: HIDRIVE}
+  - {pin_num: AD22, peripheral: FLEXSPI1, signal: 'flexspi_a_data, 0', pin_signal: PTC22, DSE: HIDRIVE}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+
+/* FUNCTION ************************************************************************************************************
+ *
+ * Function Name : BOARD_InitPsRamPins
+ * Description   : Configures pin routing and optionally pin electrical features.
+ *
+ * END ****************************************************************************************************************/
+void BOARD_InitPsRamPins(void) {                           /*!< Function assigned for the core: Cortex-M33[cm33] */
+    IOMUXC_SetPinMux(IOMUXC_PTC12_FLEXSPI1_A_DQS, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC12_FLEXSPI1_A_DQS,
+                        IOMUXC_PCR_DSE_MASK |
+                        IOMUXC_PCR_PE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC13_FLEXSPI1_A_DATA7, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC13_FLEXSPI1_A_DATA7,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC14_FLEXSPI1_A_DATA6, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC14_FLEXSPI1_A_DATA6,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC15_FLEXSPI1_A_DATA5, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC15_FLEXSPI1_A_DATA5,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC16_FLEXSPI1_A_DATA4, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC16_FLEXSPI1_A_DATA4,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC17_FLEXSPI1_A_SS0_B, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC17_FLEXSPI1_A_SS0_B,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC18_FLEXSPI1_A_SCLK, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC18_FLEXSPI1_A_SCLK,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC19_FLEXSPI1_A_DATA3, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC19_FLEXSPI1_A_DATA3,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC20_FLEXSPI1_A_DATA2, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC20_FLEXSPI1_A_DATA2,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC21_FLEXSPI1_A_DATA1, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC21_FLEXSPI1_A_DATA1,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC22_FLEXSPI1_A_DATA0, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC22_FLEXSPI1_A_DATA0,
+                        IOMUXC_PCR_DSE_MASK);
+}
+
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+BOARD_InitPins:
+- options: {callFromInitBoot: 'true', coreID: cm33}
+- pin_list:
+  - {pin_num: AH18, peripheral: FLEXSPI0, signal: flexspi_a_ss0_b, pin_signal: PTC5, DSE: HIDRIVE}
+  - {pin_num: AE18, peripheral: FLEXSPI0, signal: flexspi_a_sclk, pin_signal: PTC6, DSE: HIDRIVE}
+  - {pin_num: AF18, peripheral: FLEXSPI0, signal: flexspi_a_dqs, pin_signal: PTC0, PE: ENABLED, DSE: HIDRIVE}
+  - {pin_num: AJ16, peripheral: FLEXSPI0, signal: 'flexspi_a_data, 7', pin_signal: PTC1, DSE: HIDRIVE}
+  - {pin_num: AE17, peripheral: FLEXSPI0, signal: 'flexspi_a_data, 6', pin_signal: PTC2, DSE: HIDRIVE}
+  - {pin_num: AJ18, peripheral: FLEXSPI0, signal: 'flexspi_a_data, 5', pin_signal: PTC3, DSE: HIDRIVE}
+  - {pin_num: AF17, peripheral: FLEXSPI0, signal: 'flexspi_a_data, 4', pin_signal: PTC4, DSE: HIDRIVE}
+  - {pin_num: AH19, peripheral: FLEXSPI0, signal: 'flexspi_a_data, 3', pin_signal: PTC7, DSE: HIDRIVE}
+  - {pin_num: AD18, peripheral: FLEXSPI0, signal: 'flexspi_a_data, 2', pin_signal: PTC8, DSE: HIDRIVE}
+  - {pin_num: AJ20, peripheral: FLEXSPI0, signal: 'flexspi_a_data, 1', pin_signal: PTC9, DSE: HIDRIVE}
+  - {pin_num: AH22, peripheral: FLEXSPI0, signal: 'flexspi_a_data, 0', pin_signal: PTC10, DSE: HIDRIVE}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+
+/* FUNCTION ************************************************************************************************************
+ *
+ * Function Name : BOARD_InitPins
+ * Description   : Configures pin routing and optionally pin electrical features.
+ *
+ * END ****************************************************************************************************************/
+void BOARD_InitSpiFlashPins(void) {                                /*!< Function assigned for the core: Cortex-M33[cm33] */
+    IOMUXC_SetPinMux(IOMUXC_PTC0_FLEXSPI0_A_DQS, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC0_FLEXSPI0_A_DQS,
+                        IOMUXC_PCR_DSE_MASK |
+                        IOMUXC_PCR_PE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC1_FLEXSPI0_A_DATA7, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC1_FLEXSPI0_A_DATA7,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC10_FLEXSPI0_A_DATA0, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC10_FLEXSPI0_A_DATA0,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC2_FLEXSPI0_A_DATA6, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC2_FLEXSPI0_A_DATA6,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC3_FLEXSPI0_A_DATA5, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC3_FLEXSPI0_A_DATA5,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC4_FLEXSPI0_A_DATA4, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC4_FLEXSPI0_A_DATA4,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC5_FLEXSPI0_A_SS0_B, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC5_FLEXSPI0_A_SS0_B,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC6_FLEXSPI0_A_SCLK, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC6_FLEXSPI0_A_SCLK,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC7_FLEXSPI0_A_DATA3, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC7_FLEXSPI0_A_DATA3,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC8_FLEXSPI0_A_DATA2, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC8_FLEXSPI0_A_DATA2,
+                        IOMUXC_PCR_DSE_MASK);
+    IOMUXC_SetPinMux(IOMUXC_PTC9_FLEXSPI0_A_DATA1, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTC9_FLEXSPI0_A_DATA1,
+                        IOMUXC_PCR_DSE_MASK);
 }
 
 /***********************************************************************************************************************

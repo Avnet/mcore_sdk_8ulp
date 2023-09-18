@@ -2,6 +2,9 @@
 SET(CMAKE_SYSTEM_NAME Generic)
 CMAKE_MINIMUM_REQUIRED (VERSION 3.10.0)
 
+# MaaXBoard-8ULP QC test macro
+#add_compile_definitions(CONFIG_QCTEST)
+
 # THE VERSION NUMBER
 SET (MCUXPRESSO_CMAKE_FORMAT_MAJOR_VERSION 2)
 SET (MCUXPRESSO_CMAKE_FORMAT_MINOR_VERSION 0)
@@ -56,6 +59,9 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
 "${ProjDirPath}/../rsc_table.c"
 "${ProjDirPath}/../rsc_table.h"
 "${ProjDirPath}/../remoteproc.h"
+"${ProjDirPath}/../psram.c"
+"${ProjDirPath}/../flash.c"
+"${ProjDirPath}/../flash.c"
 "${ProjDirPath}/../board.c"
 "${ProjDirPath}/../board.h"
 "${ProjDirPath}/../clock_config.c"
