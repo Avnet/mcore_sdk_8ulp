@@ -43,6 +43,7 @@ void BOARD_InitBootPins(void)
     BOARD_InitPsRamPins();
     BOARD_InitSpiFlashPins();
     BOARD_InitMikroBusPins();
+    BOARD_InitPdmPins();
 }
 
 /*
@@ -493,6 +494,30 @@ void BOARD_InitMikroBusPins(void) {                         /*!< Function assign
     IOMUXC_SetPinMux(IOMUXC_PTA15_PTA15, 0U); /* #14 RXD   */
     IOMUXC_SetPinMux(IOMUXC_PTB12_PTB12, 0U); /* #15 INT   */
     IOMUXC_SetPinMux(IOMUXC_PTA8_PTA8,   0U); /* #16 PWM   */
+}
+
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+BOARD_InitPdmPins:
+- options: {callFromInitBoot: 'true', coreID: cm33}
+- pin_list:
+  - {pin_num: A9,  peripheral: MICFIL0, signal: 'micfil_clk,  01', pin_signal: PTB0}
+  - {pin_num: B10, peripheral: MICFIL0, signal: 'micfil_data, 01', pin_signal: PTB1, PS: UP, PE: ENABLED}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+
+/* FUNCTION ************************************************************************************************************
+ *
+ * Function Name : BOARD_InitPmicI2cPins
+ * Description   : Configures pin routing and optionally pin electrical features.
+ *
+ * END ****************************************************************************************************************/
+void BOARD_InitPdmPins(void) {                         /*!< Function assigned for the core: Cortex-M33[cm33] */
+    IOMUXC_SetPinMux(IOMUXC_PTB0_MICFIL0_CLK01, 0U);
+    IOMUXC_SetPinMux(IOMUXC_PTB1_MICFIL0_DATA01, 0U);
+    IOMUXC_SetPinConfig(IOMUXC_PTB1_MICFIL0_DATA01,
+                        IOMUXC_PCR_PE_MASK |
+                        IOMUXC_PCR_PS_MASK);
 }
 
 /***********************************************************************************************************************

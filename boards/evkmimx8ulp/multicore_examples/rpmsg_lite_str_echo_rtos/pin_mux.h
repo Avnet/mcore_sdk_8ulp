@@ -99,6 +99,8 @@ void BOARD_InitSpiFlashPins(void);                         /*!< Function assigne
 
 void BOARD_InitMikroBusPins(void);                         /*!< Function assigned for the core: Cortex-M33[cm33] */
 
+void BOARD_InitPdmPins(void);                              /*!< Function assigned for the core: Cortex-M33[cm33] */
+
 #if defined(__cplusplus)
 }
 #endif
