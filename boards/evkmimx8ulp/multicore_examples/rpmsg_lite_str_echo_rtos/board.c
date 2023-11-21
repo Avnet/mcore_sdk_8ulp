@@ -1329,8 +1329,8 @@ status_t BOARD_InitPsRam(void)
         [19] = FLEXSPI_LUT_SEQ(kFLEXSPI_Command_DUMMY_DDR, kFLEXSPI_8PAD, 0x1E, kFLEXSPI_Command_READ_DDR, kFLEXSPI_8PAD, 0x04),
     };
 
-    uint32_t reg_id[1]={0x0};
-    uint32_t reg_conf[1]={0x0};
+    uint32_t reg_id=0x0;
+    uint32_t reg_conf=0x0;
     flexspi_config_t config;
     status_t status = kStatus_Success;
 
@@ -1376,30 +1376,30 @@ status_t BOARD_InitPsRam(void)
     FLEXSPI_SoftwareReset(BOARD_FLEXSPI_PSRAM);
 
     /* Read ISSI PSRAM 66WVO8M8DALL ID register, Table 6.8 on P25. */
-    status = flexspi_octal_ram_get_vendor_id(BOARD_FLEXSPI_PSRAM, reg_id);
+    status = flexspi_octal_ram_get_vendor_id(BOARD_FLEXSPI_PSRAM, &reg_id);
     if (status != kStatus_Success)
     {
         return status;
     }
 
     /* Read ISSI PSRAM 66WVO8M8DALL configuration register, Table 6.1 on P20 */
-    status = flexspi_octal_ram_config_reg_read(BOARD_FLEXSPI_PSRAM, reg_conf);
+    status = flexspi_octal_ram_config_reg_read(BOARD_FLEXSPI_PSRAM, &reg_conf);
     if (status != kStatus_Success)
     {
         return status;
     }
 
-    /* ISSI PSRAM read data byte order is: D1 D0 D3 D2 */
-    reg_conf[0] &= ~(3<<8);  /* [1:0]=00 Set Burst Length to 128 Byte */
-    reg_conf[0] |= (0x8<<8); /* [3]=1    Fixed Latency */
-    status = flexspi_octal_ram_config_reg_write(BOARD_FLEXSPI_PSRAM, reg_conf);
+    /* ISSI PSRAM read defult data byte order is: D1 D0 D3 D2 */
+    reg_conf &= ~(3<<8);  /* [1:0]=00 Set Burst Length to 128 Byte */
+    reg_conf |= (0x8<<8); /* [3]=1    Fixed Latency */
+    status = flexspi_octal_ram_config_reg_write(BOARD_FLEXSPI_PSRAM, &reg_conf);
     if (status != kStatus_Success)
     {
         return status;
     }
 
     /* Read ISSI PSRAM 66WVO8M8DALL configuration register, Table 6.1 on P20 */
-    status = flexspi_octal_ram_config_reg_read(BOARD_FLEXSPI_PSRAM, reg_conf);
+    status = flexspi_octal_ram_config_reg_read(BOARD_FLEXSPI_PSRAM, &reg_conf);
     if (status != kStatus_Success)
     {
         return status;
