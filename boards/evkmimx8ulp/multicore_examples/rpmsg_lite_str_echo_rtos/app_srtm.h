@@ -158,20 +158,6 @@ enum
 #define APP_PIN_PTA5       (0x0005U)          /* PTA5, use for touch reset IO */
 #define APP_PIN_PTA6       (0x0006U)          /* PTA6, use for MIPI-DSI enable IO */
 #define APP_PIN_PTC23      (0x0217U)          /* PTC23, use for camera power enable IO */
-#define APP_PIN_PTB4       (0x0104U)          /* PTB4 */
-
-/*
- * BOARD Relative Settings:
- * LSM6DSO INT PIN(INT1_B) --> SOC(PTB4)
- * Note: Choose the falling edge trigger type to fix the issue that soc cannot get the interrupt from multiple sensors
- */
-#define APP_LSM6DSO_INT1_B_PIN (APP_PIN_PTB4) /* Interrupt pin connected to LSM6DSO(sensor) */
-#define APP_LSM6DSO_INT_ACTIVE_LEVEL (LSM_INT_ACTIVE_HIGH)
-#if (APP_LSM6DSO_INT_ACTIVE_LEVEL == LSM_INT_ACTIVE_HIGH)
-#define APP_LSM6DSO_INT_TRIGGER_TYPE (kRGPIO_InterruptFallingEdge)
-#else
-#define APP_LSM6DSO_INT_TRIGGER_TYPE (kRGPIO_InterruptRisingEdge)
-#endif
 
 /* PDM service */
 #define APP_PDM_RX_DMA_CHANNEL                  0

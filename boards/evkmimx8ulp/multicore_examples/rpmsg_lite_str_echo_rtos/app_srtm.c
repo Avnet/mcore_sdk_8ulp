@@ -85,6 +85,7 @@ typedef struct
     uint32_t cnt; /* step counter now. */
 } app_pedometer_t;
 
+#if 0
 typedef struct
 {
     bool stateEnabled;
@@ -92,6 +93,7 @@ typedef struct
     uint32_t pollDelay;
     app_pedometer_t pedometer;
 } app_sensor_t;
+#endif
 
 static uint8_t edmaUseCnt = 0U;
 #if SRTM_SAI_EDMA_LOCAL_BUF_ENABLE
@@ -206,6 +208,7 @@ static const srtm_io_event_t wuuPinModeEvents[] = {
     SRTM_IoEventEitherEdge   /* kWUU_ExternalPinAnyEdge */
 };
 
+#if 0
 static srtm_status_t APP_SRTM_Sensor_EnableStateDetector(srtm_sensor_adapter_t adapter,
                                                          srtm_sensor_type_t type,
                                                          uint8_t index,
@@ -226,6 +229,7 @@ static app_sensor_t sensor                       = {.stateEnabled  = false,
                                                     .dataEnabled   = false,
                                                     .pollDelay     = 1000, /* 1 sec by default. */
                                                     .pedometer.cnt = 0};
+#endif
 
 static srtm_dispatcher_t disp;
 static srtm_peercore_t core;
@@ -252,6 +256,7 @@ static TimerHandle_t restoreRegValOfMuTimer; /* use the timer to restore registe
 static TimerHandle_t
     chngModeFromActToDslForApdTimer; /* use the timer to change mode of APD from active mode to Deep Sleep Mode */
 
+#if 0
 static lsm_handle_t lsmHandle;
 static srtm_service_t sensorService;
 static bool sensorReady            = false;
@@ -259,6 +264,7 @@ static srtm_procedure_t sensorProc = NULL;
 static TimerHandle_t
     sensorTiltWakeupEventTimer; /* It is used to send sensor tilt wakeup event to acore after acore(acore entered power
                            down mode) is waken by sensor(tilt interrupt)(Avoid losting a sensor tilt wakeup event) */
+#endif
 
 static app_irq_handler_t irqHandler;
 static void *irqHandlerParam;
@@ -267,8 +273,10 @@ static HAL_PWM_HANDLE_DEFINE(pwmHandle0);
 
 static HAL_RTC_HANDLE_DEFINE(rtcHandle);
 
+#if 0
 const uint8_t g_sensor_address[] = {LSM6DSO_SLAVE_ADDRESS_WHEN_SA0_PIN_IS_LOW,
                                     LSM6DSO_SLAVE_ADDRESS_WHEN_SA0_PIN_IS_HIGH};
+#endif
 
 lpm_ad_power_mode_e AD_CurrentMode   = AD_UNKOWN;
 lpm_ad_power_mode_e AD_WillEnterMode = AD_UNKOWN;
@@ -619,6 +627,7 @@ void WUU0_IRQHandler(void)
     }
 }
 
+#if 0
 static void sensorTiltWakeupEventTimer_Callback(TimerHandle_t xTimer)
 {
     if (AD_CurrentMode == AD_ACT && sensorAdapter.updateState && sensorAdapter.service)
@@ -691,6 +700,7 @@ static void APP_CheckSensorInterruptCallback(void)
         sensorProc = NULL;
     }
 }
+#endif
 
 static void APP_HandleGPIOHander(uint8_t gpioIdx)
 {
@@ -713,6 +723,7 @@ static void APP_HandleGPIOHander(uint8_t gpioIdx)
         xTimerStartFromISR(suspendContext.io.data[APP_INPUT_TOUCH_INT].timer, &reschedule);
     }
 
+#if 0
     if (APP_GPIO_IDX(APP_LSM6DSO_INT1_B_PIN) == gpioIdx &&
         (1U << APP_PIN_IDX(APP_LSM6DSO_INT1_B_PIN)) & RGPIO_GetPinsInterruptFlags(gpio, APP_GPIO_INT_SEL))
     {
@@ -720,6 +731,7 @@ static void APP_HandleGPIOHander(uint8_t gpioIdx)
         /* Read sensor data in dispatcher task context */
         APP_CheckSensorInterruptCallback();
     }
+#endif
 
     if (reschedule)
     {
@@ -1184,6 +1196,7 @@ static void APP_SRTM_Linkup(void)
     SRTM_PeerCore_AddChannel(core, chan);
     SRTM_AudioService_BindChannel(audioService, pdmAdapter, chan);
 
+#if 0
     /* Create and add SRTM Sensor channel to peer core */
     if (sensorReady)
     {
@@ -1191,6 +1204,7 @@ static void APP_SRTM_Linkup(void)
         chan               = SRTM_RPMsgEndpoint_Create(&rpmsgConfig);
         SRTM_PeerCore_AddChannel(core, chan);
     }
+#endif
 
     SRTM_Dispatcher_AddPeerCore(disp, core);
 }
@@ -1218,6 +1232,7 @@ static void APP_SRTM_InitPeerCore(void)
     }
 }
 
+#if 0
 static srtm_status_t APP_SRTM_Sensor_Init(void)
 {
     /*
@@ -1337,6 +1352,7 @@ static srtm_status_t APP_SRTM_Sensor_SetPollDelay(srtm_sensor_adapter_t adapter,
 
     return SRTM_Status_Success;
 }
+#endif
 
 static void APP_SRTM_GpioReset(void)
 {
@@ -1373,10 +1389,12 @@ static void APP_SRTM_ResetServices(void)
     /* When CA35 resets, we need to avoid async event to send to CA35. Audio and IO services have async events. */
     SRTM_AudioService_Reset(audioService, core);
     SRTM_RtcService_Reset(rtcService, core);
+#if 0
     if (sensorService != NULL)
     {
         SRTM_SensorService_Reset(sensorService, core);
     }
+#endif
     APP_SRTM_GpioReset();
 }
 
@@ -1800,6 +1818,7 @@ static void APP_SRTM_InitI2CService(void)
     SRTM_Dispatcher_RegisterService(disp, i2cService);
 }
 
+#if 0
 static void APP_CheckSensorInterrupt_RecycleMessage(srtm_message_t msg, void *param)
 {
     assert(sensorProc == NULL);
@@ -1855,6 +1874,7 @@ static void APP_SRTM_InitSensorService(void)
         SRTM_Dispatcher_RegisterService(disp, sensorService);
     }
 }
+#endif
 
 static void APP_SRTM_InitIoKeyDevice(void)
 {
@@ -2134,7 +2154,9 @@ static void APP_SRTM_InitLfclService(void)
 static void APP_SRTM_InitServices(void)
 {
     APP_SRTM_InitI2CService();
+#if 0
     APP_SRTM_InitSensorService();
+#endif
     APP_SRTM_InitAudioService();
     APP_SRTM_InitIoKeyService();
     APP_SRTM_InitPwmService();

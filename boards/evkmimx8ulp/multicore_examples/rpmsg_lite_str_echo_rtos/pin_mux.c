@@ -40,7 +40,6 @@ void BOARD_InitBootPins(void)
     BOARD_InitTpmPins();
     BOARD_InitTouchIntPins();
     BOARD_InitPmicModePins();
-    BOARD_InitLsm6dsoPins();
     BOARD_InitPdmPins();
 }
 
