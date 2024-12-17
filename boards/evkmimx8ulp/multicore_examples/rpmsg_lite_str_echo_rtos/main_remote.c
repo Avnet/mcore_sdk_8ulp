@@ -193,6 +193,12 @@ int main(void)
 
     UPOWER_PowerOnMemPart(0U, (uint32_t)kUPOWER_MP1_DMA0);
 
+    Fusion_Init();
+    /* Must handshake with uboot, unless will get issues(such as: SoC reset all the time) */
+    BOARD_HandshakeWithUboot_InAdvance();
+    CLOCK_SetIpSrc(kCLOCK_Tpm3, kCLOCK_Pcc2BusIpSrcFusionDspBus);
+    RESET_PeripheralReset(kRESET_Tpm3);
+
     CLOCK_SetIpSrcDiv(kCLOCK_Tpm0, kCLOCK_Pcc1BusIpSrcCm33Bus, 1U, 0U);
     CLOCK_SetIpSrcDiv(kCLOCK_Lpi2c0, kCLOCK_Pcc1BusIpSrcCm33Bus, 0U, 0U);
     CLOCK_SetIpSrcDiv(kCLOCK_Lpi2c1, kCLOCK_Pcc1BusIpSrcCm33Bus, 0U, 0U);
@@ -212,8 +218,6 @@ int main(void)
     RESET_PeripheralReset(kRESET_Lpi2c0);
     RESET_PeripheralReset(kRESET_Lpi2c1);
     RESET_PeripheralReset(kRESET_Tpm0);
-
-    Fusion_Init();
 
     APP_SRTM_Init();
 
