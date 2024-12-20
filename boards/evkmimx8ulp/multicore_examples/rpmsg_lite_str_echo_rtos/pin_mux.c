@@ -367,10 +367,6 @@ void BOARD_InitPdmPins(void) {                                /*!< Function assi
     IOMUXC_SetPinConfig(IOMUXC_PTB1_MICFIL0_DATA01,
                         IOMUXC_PCR_PE_MASK |
                         IOMUXC_PCR_PS_MASK);
-    IOMUXC_SetPinMux(IOMUXC_PTB3_MICFIL0_DATA23, 0U);
-    IOMUXC_SetPinConfig(IOMUXC_PTB3_MICFIL0_DATA23,
-                        IOMUXC_PCR_PE_MASK |
-                        IOMUXC_PCR_PS_MASK);
 }
 
 /*
