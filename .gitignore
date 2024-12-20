@@ -1,0 +1,10 @@
+build_log.txt
+release/
+CMakeFiles/
+version.h
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+output.map
+cscope.*
+tags
